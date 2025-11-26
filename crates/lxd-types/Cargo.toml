@@ -1,0 +1,21 @@
+[package]
+name = "lxd-types"
+version = "0.2.0"
+edition = "2021"
+authors = ["Jeremy Soller <jackpot51@gmail.com>"]
+description = "Type definitions for the LXD REST API, generated from OpenAPI spec"
+documentation = "https://docs.rs/lxd-types"
+repository = "https://github.com/system76/lxd-rs"
+readme = "README.md"
+license = "MIT"
+keywords = ["lxd", "container", "virtualization", "api"]
+categories = ["api-bindings", "virtualization"]
+
+[features]
+default = []
+# Include all generated types from OpenAPI spec
+generated = []
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }

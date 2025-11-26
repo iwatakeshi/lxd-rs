@@ -1,0 +1,35 @@
+[package]
+name = "lxd-client"
+version = "0.2.0"
+edition = "2021"
+authors = ["Jeremy Soller <jackpot51@gmail.com>"]
+description = "Async REST API client for LXD (Unix socket and HTTPS)"
+documentation = "https://docs.rs/lxd-client"
+repository = "https://github.com/system76/lxd-rs"
+readme = "README.md"
+license = "MIT"
+keywords = ["lxd", "container", "virtualization", "api", "async"]
+categories = ["api-bindings", "virtualization", "asynchronous"]
+
+[features]
+default = []
+# Use generated types from OpenAPI spec (210+ types)
+generated = ["lxd-types/generated"]
+
+[dependencies]
+lxd-types = { path = "../lxd-types" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+url = { workspace = true }
+bytes = { workspace = true }
+hyper = { workspace = true }
+hyper-util = { workspace = true }
+http-body-util = { workspace = true }
+hyperlocal = { workspace = true }
+reqwest = { workspace = true }
+
+[dev-dependencies]
+tokio-test = { workspace = true }
