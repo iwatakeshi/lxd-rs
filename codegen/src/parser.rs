@@ -1,4 +1,4 @@
-//! OpenAPI specification parser
+//! Swagger 2.0 specification parser
 
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;

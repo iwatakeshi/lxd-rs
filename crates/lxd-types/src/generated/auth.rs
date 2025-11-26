@@ -1,9 +1,9 @@
 //!//! Auth types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use super::*;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct AuthGroup {
     ///AccessEntitlements represents the entitlements that are granted to the requesting user on the attached entity.
@@ -16,7 +16,7 @@ pub struct AuthGroup {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identities: Option<BTreeMap<String, Vec<String>>>,
     /**IdentityProviderGroups are a list of groups from the IdP whose mapping
-includes this group.*/
+    includes this group.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub identity_provider_groups: Option<Vec<String>>,
     ///Name is the name of the group.
@@ -59,7 +59,7 @@ pub struct Identity {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access_entitlements: Option<Vec<String>>,
     /**AuthenticationMethod is the authentication method that the identity
-authenticates to LXD with.*/
+    authenticates to LXD with.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication_method: Option<String>,
     ///Groups is the list of groups for which the identity is a member.
@@ -69,12 +69,12 @@ authenticates to LXD with.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /**Name is the Name claim of the identity if authenticated via OIDC, or the name
-of the certificate if authenticated with TLS.*/
+    of the certificate if authenticated with TLS.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /**TLSCertificate is a PEM encoded x509 certificate. This is only set if the AuthenticationMethod is AuthenticationMethodTLS.
 
-API extension: access_management_tls.*/
+    API extension: access_management_tls.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_certificate: Option<String>,
     ///Type is the type of identity.
@@ -101,19 +101,19 @@ pub struct IdentityInfo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access_entitlements: Option<Vec<String>>,
     /**AuthenticationMethod is the authentication method that the identity
-authenticates to LXD with.*/
+    authenticates to LXD with.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication_method: Option<String>,
     /**Effective groups is the combined and deduplicated list of LXD groups that the identity is a direct member of, and
-the LXD groups that the identity is an effective member of via identity provider group mappings.*/
+    the LXD groups that the identity is an effective member of via identity provider group mappings.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effective_groups: Option<Vec<String>>,
     /**Effective permissions is the combined and deduplicated list of permissions that the identity has by virtue of
-direct membership to a LXD group, or effective membership of a LXD group via identity provider group mappings.*/
+    direct membership to a LXD group, or effective membership of a LXD group via identity provider group mappings.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effective_permissions: Option<Vec<Permission>>,
     /**FineGrained is a boolean indicating whether the identity is fine-grained,
-meaning that permissions are managed via group membership.*/
+    meaning that permissions are managed via group membership.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fine_grained: Option<bool>,
     ///Groups is the list of groups for which the identity is a member.
@@ -123,12 +123,12 @@ meaning that permissions are managed via group membership.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /**Name is the Name claim of the identity if authenticated via OIDC, or the name
-of the certificate if authenticated with TLS.*/
+    of the certificate if authenticated with TLS.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /**TLSCertificate is a PEM encoded x509 certificate. This is only set if the AuthenticationMethod is AuthenticationMethodTLS.
 
-API extension: access_management_tls.*/
+    API extension: access_management_tls.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_certificate: Option<String>,
     ///Type is the type of identity.
@@ -176,7 +176,7 @@ pub struct IdentityPut {
     pub groups: Option<Vec<String>>,
     /**TLSCertificate is a base64 encoded x509 certificate. This can only be set if the authentication method of the identity is AuthenticationMethodTLS.
 
-API extension: access_management_tls.*/
+    API extension: access_management_tls.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_certificate: Option<String>,
 }

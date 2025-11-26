@@ -1,9 +1,9 @@
 //!//! Networks types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use super::*;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 ///Network represents a LXD network
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Network {
@@ -223,10 +223,10 @@ pub struct NetworkForwardsPost {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /**The listen address of the forward
-For OVN networks only, you can dynamically allocate the listen address from a pre-defined range.
-To do so for an IPv4 address, provide a listen_address of `0.0.0.0`.
-For an IPv6 address, provide a listen_address of `::`.
-These are equivalent to the `allocate=ipv{4|6}` flag used to create a network forward via the CLI.*/
+    For OVN networks only, you can dynamically allocate the listen address from a pre-defined range.
+    To do so for an IPv4 address, provide a listen_address of `0.0.0.0`.
+    For an IPv6 address, provide a listen_address of `::`.
+    These are equivalent to the `allocate=ipv{4|6}` flag used to create a network forward via the CLI.*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listen_address: Option<String>,
     ///Port forwards (optional)

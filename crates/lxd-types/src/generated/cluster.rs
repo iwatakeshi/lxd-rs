@@ -1,9 +1,9 @@
 //!//! Cluster types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use super::*;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Cluster {
     ///Whether clustering is enabled
@@ -39,7 +39,7 @@ pub struct ClusterGroup {
     pub name: Option<String>,
     /**UsedBy is a list or LXD entity URLs that reference the cluster group.
 
-API extension: clustering_groups_used_by*/
+    API extension: clustering_groups_used_by*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub used_by: Option<Vec<String>>,
 }
@@ -183,8 +183,8 @@ pub struct ClusterMemberStatePost {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
     /**Override the configured evacuation mode.
-Valid modes for the "evacuate" action are "stop", "migrate", and "live-migrate".
-Valid modes for the "restore" action are "skip".*/
+    Valid modes for the "evacuate" action are "stop", "migrate", and "live-migrate".
+    Valid modes for the "restore" action are "skip".*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<String>,
 }

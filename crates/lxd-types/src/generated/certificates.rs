@@ -1,8 +1,8 @@
 //!//! Certificates types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use super::*;
+use serde::{Deserialize, Serialize};
 ///Certificate represents a LXD certificate
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Certificate {

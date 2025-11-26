@@ -1,9 +1,9 @@
 //!//! Server types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use super::*;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 ///Server represents a LXD server
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Server {
@@ -103,7 +103,7 @@ pub struct ServerEnvironment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_clustered: Option<bool>,
     /**Mode that the event distribution subsystem is operating in on this server.
-Either "full-mesh", "hub-server" or "hub-client".*/
+    Either "full-mesh", "hub-server" or "hub-client".*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server_event_mode: Option<String>,
     ///Whether the version is an LTS release

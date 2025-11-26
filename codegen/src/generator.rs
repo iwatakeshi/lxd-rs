@@ -1,4 +1,4 @@
-//! Rust code generator from OpenAPI schemas
+//! Rust code generator from Swagger 2.0 schemas
 
 use crate::parser::{OpenApiSpec, Schema};
 use heck::{ToSnakeCase, ToUpperCamelCase};
@@ -282,7 +282,8 @@ fn generate_struct_type(name: &str, schema: &Schema) -> anyhow::Result<TokenStre
         .map(|(field_name, field_schema)| {
             let rust_field_name = sanitize_field_name(field_name);
             let field_ident = format_ident!("{}", rust_field_name);
-            let field_doc = escape_html_tags(field_schema.description.as_deref().unwrap_or("").trim());
+            let field_doc =
+                escape_html_tags(field_schema.description.as_deref().unwrap_or("").trim());
             let is_required = required_fields.contains(field_name);
 
             let field_type = if is_required {
