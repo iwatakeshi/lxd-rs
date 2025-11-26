@@ -93,6 +93,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
+### Configure Timeouts and Retries
+
+```rust
+use lxd::prelude::*;
+use std::time::Duration;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::new_unix_socket()?
+        .with_timeout(Duration::from_secs(60))
+        .with_retries(5);
+
+    // Or use the builder for more control
+    let config = ClientConfig::new()
+        .with_timeout(Duration::from_secs(120))
+        .with_retries(3)
+        .with_retry_delay(Duration::from_millis(200));
+
+    let client = Client::new_unix_socket()?.with_config(config);
+    
+    Ok(())
+}
+```
+
 ## API Coverage
 
 ### Instances (Containers & VMs)
@@ -112,6 +136,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 | `freeze_instance(name)` | Freeze (pause) an instance |
 | `unfreeze_instance(name)` | Unfreeze an instance |
 
+### Instance Snapshots
+
+| Method | Description |
+|--------|-------------|
+| `list_instance_snapshots(instance)` | List snapshot URLs |
+| `list_instance_snapshots_full(instance)` | List snapshots with details |
+| `get_instance_snapshot(instance, name)` | Get snapshot details |
+| `create_instance_snapshot(instance, request)` | Create a snapshot |
+| `delete_instance_snapshot(instance, name)` | Delete a snapshot |
+| `restore_instance_snapshot(instance, name)` | Restore from snapshot |
+
 ### Images
 
 | Method | Description |
@@ -122,6 +157,61 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 | `create_image(request)` | Import an image |
 | `update_image(fingerprint, request)` | Update image properties |
 | `delete_image(fingerprint)` | Delete an image |
+
+### Networks
+
+| Method | Description |
+|--------|-------------|
+| `list_networks()` | List network URLs |
+| `list_networks_full()` | List networks with details |
+| `get_network(name)` | Get network details |
+| `create_network(request)` | Create a network |
+| `update_network(name, request)` | Update network config |
+| `delete_network(name)` | Delete a network |
+
+### Storage Pools
+
+| Method | Description |
+|--------|-------------|
+| `list_storage_pools()` | List storage pool URLs |
+| `list_storage_pools_full()` | List pools with details |
+| `get_storage_pool(name)` | Get pool details |
+| `create_storage_pool(request)` | Create a storage pool |
+| `update_storage_pool(name, request)` | Update pool config |
+| `delete_storage_pool(name)` | Delete a storage pool |
+
+### Storage Volumes
+
+| Method | Description |
+|--------|-------------|
+| `list_storage_volumes(pool)` | List volume URLs |
+| `list_storage_volumes_full(pool)` | List volumes with details |
+| `get_storage_volume(pool, type, name)` | Get volume details |
+| `create_storage_volume(pool, request)` | Create a volume |
+| `update_storage_volume(pool, type, name, request)` | Update volume |
+| `delete_storage_volume(pool, type, name)` | Delete a volume |
+
+### Profiles
+
+| Method | Description |
+|--------|-------------|
+| `list_profiles()` | List profile URLs |
+| `list_profiles_full()` | List profiles with details |
+| `get_profile(name)` | Get profile details |
+| `create_profile(request)` | Create a profile |
+| `update_profile(name, request)` | Update profile |
+| `delete_profile(name)` | Delete a profile |
+
+### Projects
+
+| Method | Description |
+|--------|-------------|
+| `list_projects()` | List project URLs |
+| `list_projects_full()` | List projects with details |
+| `get_project(name)` | Get project details |
+| `create_project(request)` | Create a project |
+| `update_project(name, request)` | Update project |
+| `delete_project(name)` | Delete a project |
 
 ### Operations
 

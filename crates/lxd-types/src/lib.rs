@@ -39,6 +39,16 @@ mod instances;
 mod images;
 #[cfg(not(feature = "generated"))]
 mod operations;
+#[cfg(not(feature = "generated"))]
+mod profiles;
+#[cfg(not(feature = "generated"))]
+mod projects;
+#[cfg(not(feature = "generated"))]
+mod networks;
+#[cfg(not(feature = "generated"))]
+mod storage;
+#[cfg(not(feature = "generated"))]
+mod snapshots;
 
 #[cfg(not(feature = "generated"))]
 pub use common::*;
@@ -48,6 +58,16 @@ pub use instances::*;
 pub use images::*;
 #[cfg(not(feature = "generated"))]
 pub use operations::*;
+#[cfg(not(feature = "generated"))]
+pub use profiles::*;
+#[cfg(not(feature = "generated"))]
+pub use projects::*;
+#[cfg(not(feature = "generated"))]
+pub use networks::*;
+#[cfg(not(feature = "generated"))]
+pub use storage::*;
+#[cfg(not(feature = "generated"))]
+pub use snapshots::*;
 
 // Response types are always available as they're not in the Swagger spec
 mod responses;

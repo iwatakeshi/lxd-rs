@@ -61,7 +61,7 @@ pub mod client {
     pub use lxd_client::*;
 }
 
-pub use lxd_client::{Client, Error as ClientError, Result as ClientResult, Transport};
+pub use lxd_client::{Client, Error as ClientError, Result as ClientResult, Transport, ClientConfig, ClientBuilder};
 
 /// Prelude module for convenient imports
 ///
@@ -70,5 +70,5 @@ pub use lxd_client::{Client, Error as ClientError, Result as ClientResult, Trans
 /// ```
 pub mod prelude {
     pub use lxd_types::*;
-    pub use lxd_client::{Client, Error as ClientError, Result as ClientResult};
+    pub use lxd_client::{Client, Error as ClientError, Result as ClientResult, ClientConfig, ClientBuilder};
 }
