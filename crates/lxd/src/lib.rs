@@ -48,7 +48,7 @@
 //!
 //! ## Feature Flags
 //!
-//! - `generated` - Use 210+ types generated from LXD OpenAPI spec
+//! - `generated` - Use 210+ types generated from LXD Swagger spec
 
 #![deny(missing_docs)]
 
@@ -64,13 +64,11 @@ pub mod client {
 pub use lxd_client::{Client, Error as ClientError, Result as ClientResult, Transport};
 
 /// Prelude module for convenient imports
+///
+/// ```rust,no_run
+/// use lxd::prelude::*;
+/// ```
 pub mod prelude {
-    //! Convenient imports for common LXD operations
-    //!
-    //! ```rust,no_run
-    //! use lxd::prelude::*;
-    //! ```
-    
     pub use lxd_types::*;
     pub use lxd_client::{Client, Error as ClientError, Result as ClientResult};
 }

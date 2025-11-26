@@ -3,7 +3,7 @@ name = "lxd-types"
 version = "0.2.0"
 edition = "2021"
 authors = ["Jeremy Soller <jackpot51@gmail.com>"]
-description = "Type definitions for the LXD REST API, generated from OpenAPI spec"
+description = "Type definitions for the LXD REST API, generated from Swagger 2.0 spec"
 documentation = "https://docs.rs/lxd-types"
 repository = "https://github.com/system76/lxd-rs"
 readme = "README.md"
@@ -13,7 +13,7 @@ categories = ["api-bindings", "virtualization"]
 
 [features]
 default = []
-# Include all generated types from OpenAPI spec
+# Include all generated types from Swagger 2.0 spec
 generated = []
 
 [dependencies]

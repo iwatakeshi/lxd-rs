@@ -1,88 +1,79 @@
 # lxd-rs
 
-A comprehensive Rust library for controlling LXD - Linux Containers and Virtual Machines.
+A native Rust client library for [LXD](https://canonical.com/lxd) – the modern container and virtual machine manager.
 
-[![crates.io](https://img.shields.io/crates/v/lxd.svg)](https://crates.io/crates/lxd)
-[![docs.rs](https://docs.rs/lxd/badge.svg)](https://docs.rs/lxd)
-
-## Project Structure
-
-```
-lxd-rs/
-├── crates/
-│   ├── lxd-types/       # Type definitions (210+ types from OpenAPI spec)
-│   ├── lxd-client/      # Async REST API client (Unix socket & HTTPS)
-│   └── lxd/             # Umbrella crate re-exporting all functionality
-└── codegen/             # OpenAPI code generator
-```
+[![Crates.io](https://img.shields.io/crates/v/lxd.svg)](https://crates.io/crates/lxd)
+[![Documentation](https://docs.rs/lxd/badge.svg)](https://docs.rs/lxd)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Features
 
-- **Async/await** support with Tokio
-- **Unix socket** communication (default, no network overhead)
-- **HTTPS** support for remote servers
-- **Type-safe** API with 210+ types generated from LXD OpenAPI spec
-- Direct communication with LXD daemon
+- 🚀 **Async/await** – Built on Tokio for high-performance async I/O
+- 🔌 **Unix Socket** – Zero-overhead local connections (default)
+- 🔒 **HTTPS + TLS** – Secure remote connections with client certificates
+- 📦 **210+ Types** – Complete type coverage generated from LXD's Swagger spec
+- 🦀 **Pure Rust** – No CLI wrappers or shell commands
 
-## Installation
+## Quick Start
 
 Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
 lxd = "0.2"
-tokio = { version = "1.0", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
 ```
 
-Or for individual crates:
-
-```toml
-[dependencies]
-lxd-client = "0.2"  # Just the REST client
-lxd-types = "0.2"   # Just the type definitions
-```
-
-### Feature Flags
-
-- `generated` - Use 210+ types auto-generated from LXD OpenAPI spec (all fields are `Option<T>`)
-- Default - Use hand-crafted types (more ergonomic with proper defaults)
-
-```toml
-# To use generated types:
-[dependencies]
-lxd = { version = "0.2", features = ["generated"] }
-```
-
-## Quick Start
-
-### Connect via Unix Socket
+### Connect to LXD
 
 ```rust
 use lxd::prelude::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Connect to local LXD via Unix socket
+    // Connect via Unix socket (default)
     let client = Client::new_unix_socket()?;
-    
+
     // Get server info
     let server = client.get_server().await?;
-    println!("LXD API version: {}", server.api_version);
-    
-    // List instances
+    println!("LXD API v{}", server.api_version);
+
+    // List all instances
     let instances = client.list_instances_full().await?;
     for instance in instances {
         println!("{}: {}", instance.name, instance.status);
     }
-    
-    // Start an instance
-    client.start_instance("my-container").await?;
-    
+
     Ok(())
 }
 ```
 
-### Connect via HTTPS
+### Create a Container
+
+```rust
+use lxd::prelude::*;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let client = Client::new_unix_socket()?;
+
+    // Create from an image alias
+    let source = InstanceSource::from_image("ubuntu/22.04");
+    let request = InstancesPost::new("my-container", source);
+
+    let operation = client.create_instance(&request).await?;
+    
+    // Wait for the operation to complete
+    client.wait_operation(&operation.id, None).await?;
+    
+    // Start the container
+    client.start_instance("my-container").await?;
+
+    Ok(())
+}
+```
+
+### Connect to Remote LXD Server
 
 ```rust
 use lxd::prelude::*;
@@ -94,98 +85,157 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "/path/to/client.crt",
         "/path/to/client.key",
     )?;
-    
-    let server = client.get_server().await?;
-    println!("LXD API version: {}", server.api_version);
-    
+
+    let instances = client.list_instances_full().await?;
+    println!("Remote server has {} instances", instances.len());
+
     Ok(())
 }
 ```
 
 ## API Coverage
 
-| Category | Status | Operations |
-|----------|--------|------------|
-| Server | ✅ | Get info, API version |
-| Instances | ✅ | List, Get, Create, Update, Delete, State (start/stop/restart) |
-| Images | ✅ | List, Get, Create, Update, Delete |
-| Networks | ⏳ | Planned |
-| Storage | ⏳ | Planned |
-| Profiles | ⏳ | Planned |
-| Projects | ⏳ | Planned |
-| Cluster | ⏳ | Planned |
+### Instances (Containers & VMs)
 
-## Generated Types
+| Method | Description |
+|--------|-------------|
+| `list_instances()` | List instance URLs |
+| `list_instances_full()` | List instances with full details |
+| `get_instance(name)` | Get instance details |
+| `create_instance(request)` | Create a new instance |
+| `update_instance(name, request)` | Update instance config |
+| `delete_instance(name)` | Delete an instance |
+| `get_instance_state(name)` | Get instance state |
+| `start_instance(name)` | Start an instance |
+| `stop_instance(name, force)` | Stop an instance |
+| `restart_instance(name)` | Restart an instance |
+| `freeze_instance(name)` | Freeze (pause) an instance |
+| `unfreeze_instance(name)` | Unfreeze an instance |
 
-When using the `generated` feature, you get 210+ types covering:
+### Images
 
-- **Instances** (29 types): Instance, InstanceState, InstanceSnapshot, etc.
-- **Networks** (37 types): Network, NetworkLease, NetworkACL, etc.
-- **Storage** (25 types): StoragePool, StorageVolume, StorageBucket, etc.
-- **Resources** (36 types): ResourcesCPU, ResourcesMemory, ResourcesGPU, etc.
-- **Cluster** (16 types): ClusterMember, ClusterGroup, etc.
-- And more...
+| Method | Description |
+|--------|-------------|
+| `list_images()` | List image fingerprints |
+| `list_images_full()` | List images with full details |
+| `get_image(fingerprint)` | Get image details |
+| `create_image(request)` | Import an image |
+| `update_image(fingerprint, request)` | Update image properties |
+| `delete_image(fingerprint)` | Delete an image |
 
-## Code Generation
+### Operations
 
-Types are generated from the official LXD OpenAPI specification:
+| Method | Description |
+|--------|-------------|
+| `list_operations()` | List all operations |
+| `get_operation(id)` | Get operation details |
+| `wait_operation(id, timeout)` | Wait for operation to complete |
+| `cancel_operation(id)` | Cancel an operation |
 
-```bash
-cd codegen
-cargo run
+### Server
+
+| Method | Description |
+|--------|-------------|
+| `get_server()` | Get server information |
+| `get_api_version()` | Get API version string |
+
+## Project Structure
+
+```
+lxd-rs/
+├── crates/
+│   ├── lxd/           # Main crate (use this one)
+│   ├── lxd-client/    # REST API client
+│   └── lxd-types/     # Type definitions
+└── codegen/           # Swagger → Rust code generator
+```
+
+### Crate Overview
+
+| Crate | Description |
+|-------|-------------|
+| [`lxd`](https://crates.io/crates/lxd) | Umbrella crate – re-exports client and types |
+| [`lxd-client`](https://crates.io/crates/lxd-client) | Async REST client with Unix socket & HTTPS support |
+| [`lxd-types`](https://crates.io/crates/lxd-types) | 210+ type definitions from LXD's Swagger spec |
+
+## Feature Flags
+
+| Feature | Description |
+|---------|-------------|
+| `generated` | Use all 210+ auto-generated types (fields are `Option<T>`) |
+| *(default)* | Use hand-crafted types with sensible defaults |
+
+```toml
+# Use generated types for maximum API coverage
+lxd = { version = "0.2", features = ["generated"] }
 ```
 
 ## Requirements
 
-- **LXD daemon** running on Linux
-- **Unix socket access**: `/var/snap/lxd/common/lxd/unix.socket` (snap) or `/var/lib/lxd/unix.socket`
-- For HTTPS: LXD configured with `core.https_address` and client certificates
+- **Rust 1.75+** (async fn in traits)
+- **LXD 4.0+** (REST API v1.0)
+- **Linux** (LXD only runs on Linux)
 
-### Unix Socket Permissions
+### Permissions
+
+To access the LXD Unix socket, your user must be in the `lxd` group:
 
 ```bash
 sudo usermod -aG lxd $USER
-newgrp lxd
+newgrp lxd  # or log out and back in
 ```
 
-### HTTPS Setup
+## Error Handling
 
-```bash
-lxc config set core.https_address "[::]:8443"
+All client methods return `Result<T, lxd_client::Error>`:
+
+```rust
+use lxd::prelude::*;
+
+match client.get_instance("nonexistent").await {
+    Ok(instance) => println!("Found: {}", instance.name),
+    Err(ClientError::Api { code, message }) => {
+        eprintln!("LXD error {}: {}", code, message);
+    }
+    Err(e) => eprintln!("Other error: {}", e),
+}
 ```
 
-## Platform Support
+## Examples
 
-| Platform | Support |
-|----------|---------|
-| Linux | ✅ Full support |
-| WSL2 | ✅ Full support |
-| Windows | ❌ LXD requires Linux kernel |
-| macOS | ❌ LXD requires Linux kernel |
-
-## Testing
+See the [`examples/`](crates/lxd/examples) directory:
 
 ```bash
-# Run tests
-cargo test
+# List instances via Unix socket
+cargo run --package lxd --example unix_socket
+```
 
-# Run with generated types
-cargo test --features generated
+## Contributing
 
-# Run example
-cargo run -p lxd --example unix_socket
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Development
+
+```bash
+# Build all crates
+cargo build --workspace
+
+# Run tests (requires LXD)
+cargo test --workspace
+
+# Run clippy
+cargo clippy --workspace --all-targets
+
+# Regenerate types from Swagger spec
+cd codegen && cargo run
 ```
 
 ## License
 
-MIT
+MIT License – see [LICENSE](LICENSE) for details.
 
-## Credits
+## Related Projects
 
-Originally created by Jeremy Soller. REST API and modernization by the community.
-
-## References
-
-- [LXD Documentation](https://documentation.ubuntu.com/lxd/)
-- [LXD REST API](https://documentation.ubuntu.com/lxd/en/latest/rest-api/)
-- [LXD GitHub](https://github.com/canonical/lxd)
+- [LXD](https://canonical.com/lxd) – The container/VM hypervisor
+- [lxc](https://github.com/lxc/lxc) – Low-level container runtime
+- [incus](https://github.com/lxc/incus) – LXD community fork

@@ -19,8 +19,8 @@ lxd-rs/
 │   └── lxd-types/          # API type definitions
 │       └── src/
 │           ├── lib.rs      # Type re-exports
-│           └── generated/  # Auto-generated from OpenAPI
-└── codegen/                # OpenAPI code generator
+│           └── generated/  # Auto-generated from Swagger
+└── codegen/                # Swagger 2.0 code generator
     ├── src/main.rs         # Generator implementation
     └── swagger.json        # LXD API specification
 ```
@@ -57,7 +57,7 @@ cargo run --package lxd --example unix_socket
 
 ### Working with Generated Types
 
-The types in `lxd-types` are generated from the LXD OpenAPI specification:
+The types in `lxd-types` are generated from the LXD Swagger specification:
 
 ```bash
 cd codegen

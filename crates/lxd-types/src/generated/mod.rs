@@ -1,6 +1,6 @@
 /*!Generated LXD API types
 
-This module contains Rust type definitions generated from the LXD OpenAPI specification.
+This module contains Rust type definitions generated from the LXD Swagger 2.0 specification.
 Total types generated: 210*/
 pub mod auth;
 pub mod certificates;

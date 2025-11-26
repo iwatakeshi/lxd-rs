@@ -69,7 +69,7 @@ The REST API client implementation.
 Type definitions matching the LXD API.
 
 **Structure:**
-- `src/generated/` - Types auto-generated from OpenAPI spec
+- `src/generated/` - Types auto-generated from Swagger spec
 - `src/lib.rs` - Re-exports and any manual type additions
 
 **Generated Modules:**
@@ -85,7 +85,7 @@ Type definitions matching the LXD API.
 
 ## Code Generation
 
-The `codegen/` directory contains a custom OpenAPI code generator.
+The `codegen/` directory contains a custom Swagger 2.0 code generator.
 
 ### Why Custom Generator?
 

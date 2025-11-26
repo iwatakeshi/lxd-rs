@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Monorepo architecture** with workspace-based crate organization
-- **OpenAPI code generator** (`codegen/`) that parses LXD's Swagger 2.0 spec
+- **Swagger 2.0 code generator** (`codegen/`) that parses LXD's REST API spec
 - **210+ generated types** from the official LXD API specification
 - **`lxd-types`** crate with all LXD API data structures
 - **`lxd-client`** crate with REST API client supporting:

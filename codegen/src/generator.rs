@@ -442,7 +442,7 @@ fn generate_mod_rs(modules: &[String], definitions: &BTreeMap<String, Schema>) -
 
     let type_count = definitions.len();
     let doc = format!(
-        "Generated LXD API types\n\nThis module contains Rust type definitions generated from the LXD OpenAPI specification.\nTotal types generated: {}",
+        "Generated LXD API types\n\nThis module contains Rust type definitions generated from the LXD Swagger 2.0 specification.\nTotal types generated: {}",
         type_count
     );
 

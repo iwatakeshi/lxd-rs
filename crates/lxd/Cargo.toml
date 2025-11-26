@@ -13,7 +13,7 @@ categories = ["api-bindings", "virtualization", "asynchronous"]
 
 [features]
 default = []
-# Use generated types from OpenAPI spec (210+ types)
+# Use generated types from Swagger 2.0 spec (210+ types)
 generated = ["lxd-client/generated"]
 
 [dependencies]
