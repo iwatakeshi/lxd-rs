@@ -1,9 +1,9 @@
 //!//! Common types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-#[allow(unused_imports)]
-use super::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+#[allow(unused_imports)]
+use super::*;
 ///Event represents an event entry (over websocket)
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Event {
@@ -167,10 +167,12 @@ pub struct InitStorageVolumesProjectPost {
 pub struct MetadataConfiguration {
     ///Configs contains all server configuration metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub configs: Option<BTreeMap<String, BTreeMap<String, MetadataConfigurationConfigKeys>>>,
+    pub configs: Option<
+        BTreeMap<String, BTreeMap<String, MetadataConfigurationConfigKeys>>,
+    >,
     /**Entities contains all authorization related metadata.
 
-    API extension: metadata_configuration_entity_types*/
+API extension: metadata_configuration_entity_types*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entities: Option<BTreeMap<String, MetadataConfigurationEntity>>,
 }

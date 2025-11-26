@@ -1,9 +1,9 @@
 //!//! Profiles types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-#[allow(unused_imports)]
-use super::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+#[allow(unused_imports)]
+use super::*;
 ///Profile represents a LXD profile
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Profile {

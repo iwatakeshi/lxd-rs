@@ -1,8 +1,8 @@
 //!//! Warnings types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
+use serde::{Deserialize, Serialize};
 #[allow(unused_imports)]
 use super::*;
-use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Warning {
     ///The number of times this warning occurred

@@ -1,9 +1,9 @@
 //!//! Instances types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-#[allow(unused_imports)]
-use super::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+#[allow(unused_imports)]
+use super::*;
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Instance {
     ///AccessEntitlements represents the entitlements that are granted to the requesting user on the attached entity.
@@ -457,7 +457,7 @@ pub struct InstanceSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
     /**Source disk size in bytes used to set the instance's volume size to accommodate the transferred root
-    disk. This value is ignored if the root disk device has a size explicitly configured (for conversion).*/
+disk. This value is ignored if the root disk device has a size explicitly configured (for conversion).*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source_disk_size: Option<i64>,
     ///Source type
@@ -627,7 +627,7 @@ pub struct InstanceUEFIVariable {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct InstanceUEFIVars {
     /**UEFI variables map
-    Hashmap key format is <uefi-variable-name>-<UUID>*/
+Hashmap key format is `<uefi-variable-name>`-`<UUID>`*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<BTreeMap<String, InstanceUEFIVariable>>,
 }

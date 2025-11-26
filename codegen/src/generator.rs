@@ -140,6 +140,19 @@ fn check_schema_uses_btreemap(schema: &Schema) -> bool {
     false
 }
 
+/// Escape HTML-like tags in documentation to prevent rustdoc warnings
+fn escape_html_tags(doc: &str) -> String {
+    // Replace angle brackets that look like HTML tags with backtick-wrapped versions
+    // This handles patterns like <uefi-variable-name> or <UUID>
+    let mut result = doc.to_string();
+
+    // Find and escape patterns like <word> or <word-word>
+    let re = regex::Regex::new(r"<([a-zA-Z][a-zA-Z0-9_-]*)>").unwrap();
+    result = re.replace_all(&result, "`<$1>`").to_string();
+
+    result
+}
+
 /// Generate a module file for a category
 fn generate_module(
     category: &str,
@@ -179,7 +192,7 @@ fn generate_module(
 /// Generate a Rust type definition from a schema
 fn generate_type_definition(name: &str, schema: &Schema) -> anyhow::Result<TokenStream> {
     let type_name = format_ident!("{}", name);
-    let doc = schema.description.as_deref().unwrap_or("").trim();
+    let doc = escape_html_tags(schema.description.as_deref().unwrap_or("").trim());
 
     // Handle enum types
     if !schema.enum_values.is_empty() {
@@ -215,7 +228,7 @@ fn generate_type_definition(name: &str, schema: &Schema) -> anyhow::Result<Token
 /// Generate an enum type
 fn generate_enum_type(name: &str, schema: &Schema) -> anyhow::Result<TokenStream> {
     let type_name = format_ident!("{}", name);
-    let doc = schema.description.as_deref().unwrap_or("").trim();
+    let doc = escape_html_tags(schema.description.as_deref().unwrap_or("").trim());
 
     let variants: Vec<_> = schema
         .enum_values
@@ -259,7 +272,7 @@ fn generate_enum_type(name: &str, schema: &Schema) -> anyhow::Result<TokenStream
 /// Generate a struct type
 fn generate_struct_type(name: &str, schema: &Schema) -> anyhow::Result<TokenStream> {
     let type_name = format_ident!("{}", name);
-    let doc = schema.description.as_deref().unwrap_or("").trim();
+    let doc = escape_html_tags(schema.description.as_deref().unwrap_or("").trim());
 
     let required_fields: BTreeSet<_> = schema.required.iter().cloned().collect();
 
@@ -269,7 +282,7 @@ fn generate_struct_type(name: &str, schema: &Schema) -> anyhow::Result<TokenStre
         .map(|(field_name, field_schema)| {
             let rust_field_name = sanitize_field_name(field_name);
             let field_ident = format_ident!("{}", rust_field_name);
-            let field_doc = field_schema.description.as_deref().unwrap_or("").trim();
+            let field_doc = escape_html_tags(field_schema.description.as_deref().unwrap_or("").trim());
             let is_required = required_fields.contains(field_name);
 
             let field_type = if is_required {
