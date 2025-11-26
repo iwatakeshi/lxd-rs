@@ -30,7 +30,11 @@ pub fn generate(spec: &OpenApiSpec, output_dir: &Path) -> anyhow::Result<()> {
 
         fs::write(&file_path, formatted)?;
         modules.push(module_name);
-        println!("  Generated: {}.rs ({} types)", category.to_snake_case(), defs.len());
+        println!(
+            "  Generated: {}.rs ({} types)",
+            category.to_snake_case(),
+            defs.len()
+        );
     }
 
     // Generate mod.rs
@@ -55,7 +59,9 @@ fn collect_definitions(spec: &OpenApiSpec) -> BTreeMap<String, Schema> {
 }
 
 /// Group definitions by category based on naming patterns
-fn group_definitions(definitions: &BTreeMap<String, Schema>) -> BTreeMap<String, Vec<(String, Schema)>> {
+fn group_definitions(
+    definitions: &BTreeMap<String, Schema>,
+) -> BTreeMap<String, Vec<(String, Schema)>> {
     let mut grouped: BTreeMap<String, Vec<(String, Schema)>> = BTreeMap::new();
 
     for (name, schema) in definitions {
@@ -116,26 +122,29 @@ fn check_schema_uses_btreemap(schema: &Schema) -> bool {
     if schema.additional_properties.is_some() {
         return true;
     }
-    
+
     // Check properties for nested maps
     for prop_schema in schema.properties.values() {
         if check_schema_uses_btreemap(prop_schema) {
             return true;
         }
     }
-    
+
     // Check items for array types
     if let Some(items) = &schema.items {
         if check_schema_uses_btreemap(items) {
             return true;
         }
     }
-    
+
     false
 }
 
 /// Generate a module file for a category
-fn generate_module(category: &str, definitions: &[(String, Schema)]) -> anyhow::Result<TokenStream> {
+fn generate_module(
+    category: &str,
+    definitions: &[(String, Schema)],
+) -> anyhow::Result<TokenStream> {
     let mut type_tokens = Vec::new();
 
     for (name, schema) in definitions {
@@ -144,7 +153,7 @@ fn generate_module(category: &str, definitions: &[(String, Schema)]) -> anyhow::
     }
 
     let doc = format!("//! {} types for LXD API", category.to_upper_camel_case());
-    
+
     // Only include BTreeMap import if actually used
     let btreemap_import = if uses_btreemap(definitions) {
         quote! { use std::collections::BTreeMap; }
@@ -158,7 +167,7 @@ fn generate_module(category: &str, definitions: &[(String, Schema)]) -> anyhow::
 
         use serde::{Deserialize, Serialize};
         #btreemap_import
-        
+
         // Import types from sibling modules
         #[allow(unused_imports)]
         use super::*;
@@ -189,14 +198,14 @@ fn generate_type_definition(name: &str, schema: &Schema) -> anyhow::Result<Token
 
     // Default: generate type alias for simple types
     let rust_type = schema_to_rust_type(schema);
-    
+
     // Only add doc comment if there's actual content
     let doc_attr = if doc.is_empty() {
         quote! {}
     } else {
         quote! { #[doc = #doc] }
     };
-    
+
     Ok(quote! {
         #doc_attr
         pub type #type_name = #rust_type;
@@ -299,7 +308,7 @@ fn generate_struct_type(name: &str, schema: &Schema) -> anyhow::Result<TokenStre
             }
         })
         .collect();
-    
+
     // Only add doc comment if there's actual content
     let doc_attr = if doc.trim().is_empty() {
         quote! {}
@@ -328,11 +337,11 @@ fn generate_all_of_type(name: &str, schema: &Schema) -> anyhow::Result<TokenStre
             // For now, just note it
             println!("    Note: {} includes reference to {}", name, ref_name);
         }
-        
+
         for (prop_name, prop_schema) in &sub_schema.properties {
             merged_props.insert(prop_name.clone(), prop_schema.clone());
         }
-        
+
         merged_required.extend(sub_schema.required.clone());
     }
 
@@ -364,20 +373,16 @@ fn schema_to_rust_type(schema: &Schema) -> TokenStream {
             // Could use chrono::DateTime<Utc> with feature flag for date-time format
             quote! { String }
         }
-        Some("integer") => {
-            match schema.format.as_deref() {
-                Some("int32") => quote! { i32 },
-                Some("int64") => quote! { i64 },
-                _ => quote! { i64 },
-            }
-        }
-        Some("number") => {
-            match schema.format.as_deref() {
-                Some("float") => quote! { f32 },
-                Some("double") => quote! { f64 },
-                _ => quote! { f64 },
-            }
-        }
+        Some("integer") => match schema.format.as_deref() {
+            Some("int32") => quote! { i32 },
+            Some("int64") => quote! { i64 },
+            _ => quote! { i64 },
+        },
+        Some("number") => match schema.format.as_deref() {
+            Some("float") => quote! { f32 },
+            Some("double") => quote! { f64 },
+            _ => quote! { f64 },
+        },
         Some("boolean") => quote! { bool },
         Some("array") => {
             if let Some(items) = &schema.items {
@@ -410,7 +415,7 @@ fn schema_to_rust_type(schema: &Schema) -> TokenStream {
 /// Sanitize a field name to be a valid Rust identifier
 fn sanitize_field_name(name: &str) -> String {
     let snake = name.to_snake_case();
-    
+
     // Handle Rust keywords
     match snake.as_str() {
         "type" => "kind".to_string(),
@@ -430,7 +435,7 @@ fn sanitize_field_name(name: &str) -> String {
 /// Generate the mod.rs file
 fn generate_mod_rs(modules: &[String], definitions: &BTreeMap<String, Schema>) -> TokenStream {
     let module_idents: Vec<_> = modules.iter().map(|m| format_ident!("{}", m)).collect();
-    
+
     // Re-export all types
     let reexports: Vec<_> = modules
         .iter()

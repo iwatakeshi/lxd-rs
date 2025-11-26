@@ -1,6 +1,9 @@
 //! Unit tests for LXD client
 //!
 //! These tests use mocking and don't require a running LXD instance.
+//! They work with the hand-written types (when `generated` feature is NOT enabled).
+
+#![cfg(not(feature = "generated"))]
 
 use lxd_client::Error;
 use lxd_types::{Response, ResponseType};
@@ -21,7 +24,7 @@ mod response_parsing {
         }"#;
 
         let response: Response<serde_json::Value> = serde_json::from_str(json).unwrap();
-        
+
         assert_eq!(response.response_type, ResponseType::Sync);
         assert_eq!(response.status, "Success");
         assert_eq!(response.status_code, 200);
@@ -43,7 +46,7 @@ mod response_parsing {
         }"#;
 
         let response: Response<Option<()>> = serde_json::from_str(json).unwrap();
-        
+
         assert_eq!(response.response_type, ResponseType::Async);
         assert!(response.is_async());
         assert!(response.is_success());
@@ -63,7 +66,7 @@ mod response_parsing {
         }"#;
 
         let response: Response<Option<()>> = serde_json::from_str(json).unwrap();
-        
+
         assert_eq!(response.response_type, ResponseType::Error);
         assert!(response.is_error());
         assert!(!response.is_success());
@@ -153,16 +156,17 @@ mod type_serialization {
     fn test_instance_source_from_image() {
         let source = InstanceSource::from_image("ubuntu/22.04");
         let json = serde_json::to_string(&source).unwrap();
-        
+
         assert!(json.contains(r#""type":"image""#));
         assert!(json.contains(r#""alias":"ubuntu/22.04""#));
     }
 
     #[test]
     fn test_instance_source_from_remote() {
-        let source = InstanceSource::from_remote_image("alpine/3.18", "https://images.linuxcontainers.org");
+        let source =
+            InstanceSource::from_remote_image("alpine/3.18", "https://images.linuxcontainers.org");
         let json = serde_json::to_string(&source).unwrap();
-        
+
         assert!(json.contains(r#""type":"image""#));
         assert!(json.contains(r#""alias":"alpine/3.18""#));
         assert!(json.contains(r#""server":"https://images.linuxcontainers.org""#));
@@ -173,7 +177,7 @@ mod type_serialization {
     fn test_instance_source_none() {
         let source = InstanceSource::none();
         let json = serde_json::to_string(&source).unwrap();
-        
+
         assert!(json.contains(r#""type":"none""#));
     }
 
@@ -181,7 +185,7 @@ mod type_serialization {
     fn test_instance_source_copy() {
         let source = InstanceSource::from_copy("my-container");
         let json = serde_json::to_string(&source).unwrap();
-        
+
         assert!(json.contains(r#""type":"copy""#));
         assert!(json.contains(r#""source":"my-container""#));
     }
@@ -195,7 +199,7 @@ mod type_serialization {
             .with_profiles(vec!["default".to_string()]);
 
         let json = serde_json::to_string(&request).unwrap();
-        
+
         assert!(json.contains(r#""name":"test-container""#));
         assert!(json.contains(r#""type":"container""#));
         assert!(json.contains(r#""ephemeral":true"#));
@@ -210,7 +214,7 @@ mod type_serialization {
         };
 
         let json = serde_json::to_string(&request).unwrap();
-        
+
         // Should include description but skip None fields
         assert!(json.contains(r#""description":"Updated description""#));
         // Should not contain null values for skipped fields
@@ -268,7 +272,7 @@ mod type_serialization {
         }"#;
 
         let instance: Instance = serde_json::from_str(json).unwrap();
-        
+
         assert_eq!(instance.name, "my-container");
         assert_eq!(instance.status, "Running");
         assert_eq!(instance.instance_type, InstanceType::Container);
@@ -308,7 +312,7 @@ mod type_serialization {
         }"#;
 
         let operation: Operation = serde_json::from_str(json).unwrap();
-        
+
         assert_eq!(operation.id, "550e8400-e29b-41d4-a716-446655440000");
         assert_eq!(operation.class, "task");
         assert_eq!(operation.status, "Running");
@@ -334,7 +338,7 @@ mod type_serialization {
         }"#;
 
         let image: Image = serde_json::from_str(json).unwrap();
-        
+
         assert_eq!(image.fingerprint, "abc123def456");
         assert!(image.public);
         assert_eq!(image.size, 1234567890);
@@ -344,18 +348,18 @@ mod type_serialization {
 
 mod client_path_building {
     // These tests verify the path building logic without needing a real server
-    
+
     #[test]
     fn test_path_without_project() {
         // Simulating what Client::path does
         let project: Option<String> = None;
         let base = "/1.0/instances";
-        
+
         let path = match &project {
             Some(p) => format!("{}?project={}", base, p),
             None => base.to_string(),
         };
-        
+
         assert_eq!(path, "/1.0/instances");
     }
 
@@ -363,12 +367,12 @@ mod client_path_building {
     fn test_path_with_project() {
         let project: Option<String> = Some("my-project".to_string());
         let base = "/1.0/instances";
-        
+
         let path = match &project {
             Some(p) => format!("{}?project={}", base, p),
             None => base.to_string(),
         };
-        
+
         assert_eq!(path, "/1.0/instances?project=my-project");
     }
 
@@ -376,7 +380,7 @@ mod client_path_building {
     fn test_path_with_existing_query_params() {
         let project: Option<String> = Some("my-project".to_string());
         let base = "/1.0/instances?recursion=1";
-        
+
         let path = match &project {
             Some(p) => {
                 if base.contains('?') {
@@ -387,7 +391,7 @@ mod client_path_building {
             }
             None => base.to_string(),
         };
-        
+
         assert_eq!(path, "/1.0/instances?recursion=1&project=my-project");
     }
 }
@@ -419,7 +423,7 @@ mod server_response {
         }"#;
 
         let server: Server = serde_json::from_str(json).unwrap();
-        
+
         assert_eq!(server.api_version, "1.0");
         assert_eq!(server.auth, "trusted");
         assert!(!server.public);

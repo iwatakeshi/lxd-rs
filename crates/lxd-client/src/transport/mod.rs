@@ -1,15 +1,16 @@
 //! Transport layer for LXD API communication
 
-mod unix;
 mod https;
+mod unix;
 
-pub use unix::UnixSocketTransport;
 pub use https::HttpsTransport;
+pub use unix::UnixSocketTransport;
 
 use crate::Result;
 use serde::{de::DeserializeOwned, Serialize};
 
 /// Transport kind enum for runtime dispatch
+#[allow(clippy::large_enum_variant)]
 pub enum TransportKind {
     /// Unix socket transport
     UnixSocket(UnixSocketTransport),
@@ -25,7 +26,7 @@ impl TransportKind {
             TransportKind::Https(t) => t.get(path).await,
         }
     }
-    
+
     /// Perform a POST request
     pub async fn post<T: DeserializeOwned + Send, B: Serialize + Send + Sync>(
         &self,
@@ -37,7 +38,7 @@ impl TransportKind {
             TransportKind::Https(t) => t.post(path, body).await,
         }
     }
-    
+
     /// Perform a PUT request
     pub async fn put<T: DeserializeOwned + Send, B: Serialize + Send + Sync>(
         &self,
@@ -49,7 +50,7 @@ impl TransportKind {
             TransportKind::Https(t) => t.put(path, body).await,
         }
     }
-    
+
     /// Perform a PATCH request
     pub async fn patch<T: DeserializeOwned + Send, B: Serialize + Send + Sync>(
         &self,
@@ -61,7 +62,7 @@ impl TransportKind {
             TransportKind::Https(t) => t.patch(path, body).await,
         }
     }
-    
+
     /// Perform a DELETE request
     pub async fn delete<T: DeserializeOwned + Send>(&self, path: &str) -> Result<T> {
         match self {
@@ -74,29 +75,35 @@ impl TransportKind {
 /// Transport trait for LXD API communication
 pub trait Transport: Send + Sync {
     /// Perform a GET request
-    fn get<T: DeserializeOwned + Send>(&self, path: &str) -> impl std::future::Future<Output = Result<T>> + Send;
-    
+    fn get<T: DeserializeOwned + Send>(
+        &self,
+        path: &str,
+    ) -> impl std::future::Future<Output = Result<T>> + Send;
+
     /// Perform a POST request
     fn post<T: DeserializeOwned + Send, B: Serialize + Send + Sync>(
         &self,
         path: &str,
         body: &B,
     ) -> impl std::future::Future<Output = Result<T>> + Send;
-    
+
     /// Perform a PUT request
     fn put<T: DeserializeOwned + Send, B: Serialize + Send + Sync>(
         &self,
         path: &str,
         body: &B,
     ) -> impl std::future::Future<Output = Result<T>> + Send;
-    
+
     /// Perform a PATCH request
     fn patch<T: DeserializeOwned + Send, B: Serialize + Send + Sync>(
         &self,
         path: &str,
         body: &B,
     ) -> impl std::future::Future<Output = Result<T>> + Send;
-    
+
     /// Perform a DELETE request
-    fn delete<T: DeserializeOwned + Send>(&self, path: &str) -> impl std::future::Future<Output = Result<T>> + Send;
+    fn delete<T: DeserializeOwned + Send>(
+        &self,
+        path: &str,
+    ) -> impl std::future::Future<Output = Result<T>> + Send;
 }

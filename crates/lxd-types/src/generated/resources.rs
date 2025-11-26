@@ -1,9 +1,9 @@
 //!//! Resources types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use super::*;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 ///Resources represents the system resources available for LXD
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Resources {
@@ -631,7 +631,7 @@ pub struct ResourcesSystem {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serial: Option<String>,
     /**System nanufacturer SKU
-LENOVO_MT_20HR_BU_Think_FM_ThinkPad X1 Carbon 5th*/
+    LENOVO_MT_20HR_BU_Think_FM_ThinkPad X1 Carbon 5th*/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sku: Option<String>,
     ///System type (unknown, physical, virtual-machine, container, ...)

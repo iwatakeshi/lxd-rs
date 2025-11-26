@@ -93,7 +93,18 @@ async fn test_list_instances_full() {
         Ok(instances) => {
             println!("Found {} instances", instances.len());
             for instance in &instances {
-                println!("  - {} ({})", instance.name, instance.status);
+                #[cfg(feature = "generated")]
+                {
+                    println!(
+                        "  - {} ({})",
+                        instance.name.as_deref().unwrap_or("unknown"),
+                        instance.status.as_deref().unwrap_or("unknown")
+                    );
+                }
+                #[cfg(not(feature = "generated"))]
+                {
+                    println!("  - {} ({})", instance.name, instance.status);
+                }
             }
         }
         Err(e) => {

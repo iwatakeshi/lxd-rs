@@ -16,12 +16,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("1. Getting server information...");
     match client.get_server().await {
         Ok(server) => {
-            println!("   ✓ API Version: {}", server.api_version);
-            println!("   ✓ Auth: {}", server.auth);
+            #[cfg(feature = "generated")]
+            {
+                println!(
+                    "   ✓ API Version: {}",
+                    server.api_version.as_deref().unwrap_or("unknown")
+                );
+                println!("   ✓ Auth: {}", server.auth.as_deref().unwrap_or("unknown"));
+            }
+            #[cfg(not(feature = "generated"))]
+            {
+                println!("   ✓ API Version: {}", server.api_version);
+                println!("   ✓ Auth: {}", server.auth);
+            }
         }
         Err(e) => {
             eprintln!("   ✗ Error: {}", e);
-            eprintln!("\n   Make sure LXD is running and you have permission to access the socket.");
+            eprintln!(
+                "\n   Make sure LXD is running and you have permission to access the socket."
+            );
             eprintln!("   Try: sudo usermod -aG lxd $USER && newgrp lxd");
             return Ok(());
         }
@@ -33,7 +46,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(instances) => {
             println!("   ✓ Found {} instances", instances.len());
             for instance in instances.iter().take(5) {
-                println!("     - {} [{}]", instance.name, instance.status);
+                #[cfg(feature = "generated")]
+                {
+                    println!(
+                        "     - {} [{}]",
+                        instance.name.as_deref().unwrap_or("unknown"),
+                        instance.status.as_deref().unwrap_or("unknown")
+                    );
+                }
+                #[cfg(not(feature = "generated"))]
+                {
+                    println!("     - {} [{}]", instance.name, instance.status);
+                }
             }
         }
         Err(e) => eprintln!("   ✗ Error: {}", e),
@@ -45,7 +69,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(images) => {
             println!("   ✓ Found {} images", images.len());
             for image in images.iter().take(3) {
-                println!("     - {}...", &image.fingerprint[..12.min(image.fingerprint.len())]);
+                #[cfg(feature = "generated")]
+                {
+                    if let Some(fp) = &image.fingerprint {
+                        println!("     - {}...", &fp[..12.min(fp.len())]);
+                    }
+                }
+                #[cfg(not(feature = "generated"))]
+                {
+                    println!(
+                        "     - {}...",
+                        &image.fingerprint[..12.min(image.fingerprint.len())]
+                    );
+                }
             }
         }
         Err(e) => eprintln!("   ✗ Error: {}", e),

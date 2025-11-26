@@ -8,15 +8,15 @@ use std::collections::BTreeMap;
 pub struct Project {
     /// Project name
     pub name: String,
-    
+
     /// Project description
     #[serde(default)]
     pub description: String,
-    
+
     /// Project configuration
     #[serde(default)]
     pub config: BTreeMap<String, String>,
-    
+
     /// Resources used by the project
     #[serde(default)]
     pub used_by: Vec<String>,
@@ -27,11 +27,11 @@ pub struct Project {
 pub struct ProjectsPost {
     /// Project name
     pub name: String,
-    
+
     /// Project description
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    
+
     /// Project configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,
@@ -46,13 +46,13 @@ impl ProjectsPost {
             config: None,
         }
     }
-    
+
     /// Set the description
     pub fn with_description(mut self, description: impl Into<String>) -> Self {
         self.description = Some(description.into());
         self
     }
-    
+
     /// Set the configuration
     pub fn with_config(mut self, config: BTreeMap<String, String>) -> Self {
         self.config = Some(config);
@@ -66,7 +66,7 @@ pub struct ProjectPut {
     /// Project description
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    
+
     /// Project configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, String>>,

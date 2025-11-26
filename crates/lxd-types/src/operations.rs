@@ -8,44 +8,44 @@ use std::collections::BTreeMap;
 pub struct Operation {
     /// Operation ID
     pub id: String,
-    
+
     /// Operation class (task, token, websocket)
     pub class: String,
-    
+
     /// Operation description
     #[serde(default)]
     pub description: String,
-    
+
     /// Creation timestamp
     #[serde(default)]
     pub created_at: String,
-    
+
     /// Update timestamp
     #[serde(default)]
     pub updated_at: String,
-    
+
     /// Operation status
     pub status: String,
-    
+
     /// Status code
     pub status_code: i64,
-    
+
     /// Resources affected by the operation
     #[serde(default)]
     pub resources: BTreeMap<String, Vec<String>>,
-    
+
     /// Operation metadata
     #[serde(default)]
     pub metadata: Option<serde_json::Value>,
-    
+
     /// Whether the operation may be cancelled
     #[serde(default)]
     pub may_cancel: bool,
-    
+
     /// Error message if failed
     #[serde(default)]
     pub err: String,
-    
+
     /// Operation location (for clusters)
     #[serde(default)]
     pub location: String,
@@ -76,7 +76,7 @@ impl OperationStatus {
     pub fn is_complete(&self) -> bool {
         matches!(self, Self::Success | Self::Failure | Self::Cancelled)
     }
-    
+
     /// Check if the operation succeeded
     pub fn is_success(&self) -> bool {
         matches!(self, Self::Success)

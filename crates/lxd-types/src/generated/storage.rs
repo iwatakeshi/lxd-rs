@@ -1,9 +1,9 @@
 //!//! Storage types for LXD API
 #![allow(clippy::derive_partial_eq_without_eq)]
-use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
 #[allow(unused_imports)]
 use super::*;
+use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 ///StorageBucket represents the fields of a LXD storage pool bucket
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct StorageBucket {

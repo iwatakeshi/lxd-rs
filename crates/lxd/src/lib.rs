@@ -19,7 +19,8 @@
 //!     // List all instances
 //!     let instances = client.list_instances_full().await?;
 //!     for instance in instances {
-//!         println!("{}: {}", instance.name, instance.status);
+//!         // Field access varies based on `generated` feature
+//!         println!("{:?}", instance);
 //!     }
 //!     
 //!     Ok(())
@@ -40,7 +41,8 @@
 //!     )?;
 //!     
 //!     let server = client.get_server().await?;
-//!     println!("Connected to LXD API version: {}", server.api_version);
+//!     // Field access varies based on `generated` feature
+//!     println!("{:?}", server);
 //!     
 //!     Ok(())
 //! }
@@ -61,7 +63,9 @@ pub mod client {
     pub use lxd_client::*;
 }
 
-pub use lxd_client::{Client, Error as ClientError, Result as ClientResult, Transport, ClientConfig, ClientBuilder};
+pub use lxd_client::{
+    Client, ClientBuilder, ClientConfig, Error as ClientError, Result as ClientResult, Transport,
+};
 
 /// Prelude module for convenient imports
 ///
@@ -69,6 +73,8 @@ pub use lxd_client::{Client, Error as ClientError, Result as ClientResult, Trans
 /// use lxd::prelude::*;
 /// ```
 pub mod prelude {
+    pub use lxd_client::{
+        Client, ClientBuilder, ClientConfig, Error as ClientError, Result as ClientResult,
+    };
     pub use lxd_types::*;
-    pub use lxd_client::{Client, Error as ClientError, Result as ClientResult, ClientConfig, ClientBuilder};
 }
